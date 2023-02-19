@@ -46,28 +46,28 @@ def stdDev(X, population=True):
     return math.sqrt(variance(X, False))
 
 
-def flip(numFlips):
+def roll(numRolls):
     """Assumes numFlips a positive int"""
-    heads = 0
-    for i in range(numFlips):
-        if random.choice(('H', 'T')) == 'H':
-            heads += 1
-    return heads / float(numFlips)
+    ones = 0
+    for i in range(numRolls):
+        if random.randint(1, 3) == 1:
+            ones += 1
+    return ones / float(numRolls)
 
 
-def flipSim(numFlipsPerTrial, numTrials):
-    fracHeads = []
+def rollSim(numRollsPerTrial, numTrials):
+    fracOnes = []
     for i in range(numTrials):
-        fracHeads.append(flip(numFlipsPerTrial))
-    mean = sum(fracHeads) / len(fracHeads)
-    sd = stdDev(fracHeads)
-    return (fracHeads, mean, sd)
+        fracOnes.append(roll(numRollsPerTrial))
+    mean = sum(fracOnes) / len(fracOnes)
+    sd = stdDev(fracOnes)
+    return fracOnes, mean, sd
 
 
-def labelPlot(numFlips, numTrials, mean, sd):
+def labelPlot(numRolls, numTrials, mean, sd):
     pylab.title(str(numTrials) + ' trials of '
-                + str(numFlips) + ' flips each')
-    pylab.xlabel('Fraction of Heads')
+                + str(numRolls) + ' rolls each')
+    pylab.xlabel('Fraction of Ones')
     pylab.ylabel('Number of Trials')
     pylab.annotate('Mean = ' + str(round(mean, 4)) \
                    + '\nSD = ' + str(round(sd, 4)), size='x-large',
@@ -75,12 +75,12 @@ def labelPlot(numFlips, numTrials, mean, sd):
 
 
 def makePlots(numFlips1, numFlips2, numTrials):
-    val1, mean1, sd1 = flipSim(numFlips1, numTrials)
+    val1, mean1, sd1 = rollSim(numFlips1, numTrials)
     pylab.hist(val1, bins=20)
     xmin, xmax = pylab.xlim()
     labelPlot(numFlips1, numTrials, mean1, sd1)
     pylab.figure()
-    val2, mean2, sd2 = flipSim(numFlips2, numTrials)
+    val2, mean2, sd2 = rollSim(numFlips2, numTrials)
     pylab.hist(val2, bins=20)
     pylab.xlim(xmin, xmax)
     labelPlot(numFlips2, numTrials, mean2, sd2)
@@ -94,16 +94,20 @@ def showErrorBars(minExp, maxExp, numTrials):
     means, sds, xVals = [], [], []
     for exp in range(minExp, maxExp + 1):
         xVals.append(2 ** exp)
-        fracHeads, mean, sd = flipSim(2 ** exp, numTrials)
+        frac_ones, mean, sd = rollSim(2 ** exp, numTrials)
         means.append(mean)
         sds.append(sd)
-    pylab.errorbar(xVals, means, yerr=1.96 * pylab.array(sds))
+    pylab.errorbar(xVals, means, yerr=1.96 * pylab.array(sds), ecolor='red')
     pylab.semilogx()
-    pylab.title('Mean Fraction of Heads ('
+    pylab.title('Mean Fraction of Ones ('
                 + str(numTrials) + ' trials)')
-    pylab.xlabel('Number of flips per trial')
-    pylab.ylabel('Fraction of heads & 95% confidence')
+    pylab.xlabel('Number of rolls per trial')
+    pylab.ylabel('Fraction of ones & 95% confidence')
 
 
-showErrorBars(3, 12, 1000)
+min_exp = 3
+max_exp = 15
+numTrials = 2000
+showErrorBars(min_exp, max_exp, numTrials)
+pylab.savefig('meanFracOnes_' + str(min_exp) + 'to' + str(max_exp) + '_' + str(numTrials) + 'trials.pdf')
 pylab.show()

@@ -5,8 +5,8 @@ Created on Thu Jan 17 09:51:52 2019
 @author: Kerri Norton
 """
 import random
-import pylab
 import math
+import pylab
 
 vals = []
 
@@ -86,24 +86,10 @@ def makePlots(numFlips1, numFlips2, numTrials):
     labelPlot(numFlips2, numTrials, mean2, sd2)
 
 
-# Figure 15.24
-def showErrorBars(minExp, maxExp, numTrials):
-    """Assumes minExp and maxExp positive ints; minExp < maxExp
-         numTrials a positive integer
-       Plots mean fraction of heads with error bars"""
-    means, sds, xVals = [], [], []
-    for exp in range(minExp, maxExp + 1):
-        xVals.append(2 ** exp)
-        fracHeads, mean, sd = flipSim(2 ** exp, numTrials)
-        means.append(mean)
-        sds.append(sd)
-    pylab.errorbar(xVals, means, yerr=1.96 * pylab.array(sds))
-    pylab.semilogx()
-    pylab.title('Mean Fraction of Heads ('
-                + str(numTrials) + ' trials)')
-    pylab.xlabel('Number of flips per trial')
-    pylab.ylabel('Fraction of heads & 95% confidence')
-
-
-showErrorBars(3, 12, 1000)
+makePlots(10, 1000, 100)
 pylab.show()
+
+# vals = [0,1,3,3,2,2,1,0,1,5,4,4,3]
+# print(variance(vals))
+# vals2 = [2,2,1,0,2,1]
+# print(variance(vals2))

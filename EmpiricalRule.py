@@ -36,7 +36,7 @@ def checkEmpirical(numTrials):
         sigma = random.randint(1, 10)
         print('For mu =', mu, 'and sigma =', sigma)
         # The number of standard deviations to check
-        for numStd in (1, 3):
+        for numStd in (1, 1.96, 2, 2.576):
             # Calculates the percentage of area underneath
             # mu plus/minus stdev
             area = scipy.integrate.quad(gaussian, mu - numStd * sigma,
